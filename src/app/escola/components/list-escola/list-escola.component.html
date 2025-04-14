@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="header">
+        <h1>Escolas</h1>
+        <button class="btn btn-primary" (click)="novaEscola()">
+            <i class="fas fa-plus"></i> Nova Escola
+        </button>
+    </div>
+
+    <div class="table-container" *ngIf="!loading; else loadingTemplate">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let escola of escolas">
+                    <td>{{escola.nome}}</td>
+                    <td>{{escola.endereco}}</td>
+                    <td>{{escola.telefone}}</td>
+                    <td class="actions">
+                        <button class="btn btn-edit" (click)="editarEscola(escola.id)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-delete" (click)="confirmarExclusao(escola.id)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="escolas.length === 0">
+                    <td colspan="4" class="no-data">Nenhuma escola encontrada.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ng-template #loadingTemplate>
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Carregando escolas...</p>
+        </div>
+    </ng-template>
+</div>

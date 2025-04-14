@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="header">
+        <h1>{{ isEdit ? 'Editar Escola' : 'Nova Escola' }}</h1>
+        <button class="btn btn-secondary" (click)="voltar()">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input 
+                type="text" 
+                id="nome" 
+                formControlName="nome"
+                [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+                <span *ngIf="form.get('nome')?.errors?.['required']">Nome é obrigatório</span>
+                <span *ngIf="form.get('nome')?.errors?.['minlength']">Nome deve ter pelo menos 3 caracteres</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="endereco">Endereço</label>
+            <input 
+                type="text" 
+                id="endereco" 
+                formControlName="endereco"
+                [class.is-invalid]="form.get('endereco')?.invalid && form.get('endereco')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="form.get('endereco')?.invalid && form.get('endereco')?.touched">
+                Endereço é obrigatório
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input 
+                type="text" 
+                id="telefone" 
+                formControlName="telefone"
+                [class.is-invalid]="form.get('telefone')?.invalid && form.get('telefone')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="form.get('telefone')?.invalid && form.get('telefone')?.touched">
+                Telefone é obrigatório
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+                {{ isEdit ? 'Atualizar' : 'Salvar' }}
+            </button>
+        </div>
+    </form>
+</div>

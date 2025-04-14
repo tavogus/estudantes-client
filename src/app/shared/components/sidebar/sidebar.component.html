@@ -1,0 +1,19 @@
+<div class="sidebar">
+    <div class="menu">
+        <div *ngFor="let item of menuItems" class="menu-section">
+            <div class="menu-header">
+                <i [class]="item.icon"></i>
+                <span>{{ item.title }}</span>
+            </div>
+            <div class="submenu">
+                <a *ngFor="let subItem of item.subItems" 
+                   [routerLink]="subItem.path"
+                   [class.active]="isActive(subItem.path)"
+                   class="submenu-item">
+                    <i [class]="subItem.icon"></i>
+                    <span>{{ subItem.title }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div> 
