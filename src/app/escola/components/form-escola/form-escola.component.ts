@@ -50,7 +50,7 @@ export class FormEscolaComponent implements OnInit {
             title: 'Erro',
             text: 'Erro ao carregar escola'
           });
-          this.router.navigate(['/escola']);
+          this.router.navigate(['/escolas']);
         }
       });
     }
@@ -68,7 +68,7 @@ export class FormEscolaComponent implements OnInit {
               title: 'Sucesso',
               text: 'Escola atualizada com sucesso'
             });
-            this.router.navigate(['/escola']);
+            this.router.navigate(['/escolas']);
           },
           error: () => {
             Swal.fire({
@@ -86,7 +86,7 @@ export class FormEscolaComponent implements OnInit {
               title: 'Sucesso',
               text: 'Escola criada com sucesso'
             });
-            this.router.navigate(['/escola']);
+            this.router.navigate(['/escolas']);
           },
           error: () => {
             Swal.fire({
@@ -101,6 +101,6 @@ export class FormEscolaComponent implements OnInit {
   }
 
   voltar(): void {
-    this.router.navigate(['/escola']);
+    this.router.navigate(['/escolas']);
   }
 }

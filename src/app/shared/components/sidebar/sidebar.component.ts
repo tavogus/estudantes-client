@@ -15,8 +15,8 @@ export class SidebarComponent {
       title: 'Administração',
       icon: 'fas fa-cogs',
       subItems: [
-        { title: 'Escola', path: '/escola', icon: 'fas fa-school' },
-        { title: 'Novo Aluno', path: '/aluno/novo', icon: 'fas fa-user-plus' }
+        { title: 'Escola', path: '/escolas', icon: 'fas fa-school' },
+        { title: 'Novo Aluno', path: '/alunos/novo', icon: 'fas fa-user-plus' }
       ]
     }
   ];

@@ -60,13 +60,21 @@ export class FormAlunoComponent implements OnInit {
   ngOnInit(): void {
     this.carregarEscolas();
     
-    const state = history.state;
-    if (state && state.aluno) {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
       this.isEditMode = true;
-      this.alunoId = state.aluno.id;
-      this.alunoForm.patchValue({
-        ...state.aluno,
-        escola: this.escolas.find(e => e.id === state.aluno.escolaId)
+      this.alunoId = Number(id);
+      this.alunoService.getById(this.alunoId).subscribe({
+        next: (aluno) => {
+          this.alunoForm.patchValue({
+            ...aluno,
+            escola: this.escolas.find(e => e.id === aluno.escolaId)
+          });
+        },
+        error: (error) => {
+          console.error('Erro ao carregar aluno:', error);
+          this.showNotificationMessage('Erro ao carregar aluno', 'error');
+        }
       });
     }
   }
