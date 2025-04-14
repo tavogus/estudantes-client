@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="header">
+        <h1>Alunos da Escola</h1>
+        <button class="btn btn-primary" (click)="novoAluno()">
+            <i class="fas fa-plus"></i> Novo Aluno
+        </button>
+    </div>
+
+    <div class="table-container" *ngIf="!loading; else loadingTemplate">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Data de Nascimento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let aluno of alunos">
+                    <td>{{aluno.nome}}</td>
+                    <td>{{aluno.cpf}}</td>
+                    <td>{{aluno.dataNascimento | date:'dd/MM/yyyy'}}</td>
+                    <td class="actions">
+                        <button class="btn btn-edit" (click)="editarAluno(aluno.id)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-delete" (click)="confirmarExclusao(aluno.id)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="alunos.length === 0">
+                    <td colspan="4" class="no-data">Nenhum aluno encontrado.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ng-template #loadingTemplate>
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Carregando alunos...</p>
+        </div>
+    </ng-template>
+</div> 

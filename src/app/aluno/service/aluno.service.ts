@@ -29,4 +29,8 @@ export class AlunoService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  listarAlunosPorEscola(escolaId: number): Observable<AlunoDTO[]> {
+    return this.http.get<AlunoDTO[]>(`${this.apiUrl}/escola/${escolaId}`);
+  }
 }

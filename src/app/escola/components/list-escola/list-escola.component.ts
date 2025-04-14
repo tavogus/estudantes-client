@@ -43,29 +43,23 @@ export class ListEscolaComponent implements OnInit {
   }
 
   novaEscola(): void {
-    this.router.navigate(['/escola/nova']);
+    this.router.navigate(['/escolas/nova']);
   }
 
   editarEscola(id: number | undefined): void {
     if (id) {
-      this.router.navigate(['/escola/editar', id]);
+      this.router.navigate(['/escolas/editar', id]);
     }
   }
 
   confirmarExclusao(id: number): void {
-    if (id) {
-      Swal.fire({
-        title: 'Tem certeza?',
-        text: "Esta ação não pode ser revertida!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim, excluir!',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.excluirEscola(id);
+    if (confirm('Tem certeza que deseja excluir esta escola?')) {
+      this.escolaService.excluir(id).subscribe({
+        next: () => {
+          this.carregarEscolas();
+        },
+        error: (error: any) => {
+          console.error('Erro ao excluir escola:', error);
         }
       });
     }
@@ -91,5 +85,9 @@ export class ListEscolaComponent implements OnInit {
         }
       });
     }
+  }
+
+  listarAlunos(escolaId: number): void {
+    this.router.navigate(['/alunos', escolaId]);
   }
 }
