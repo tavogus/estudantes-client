@@ -14,9 +14,12 @@
       color: #333;
     }
 
-    .btn-primary {
-      background-color: #007bff;
-      color: white;
+    .actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
       border: none;
       padding: 0.5rem 1rem;
       border-radius: 4px;
@@ -25,13 +28,28 @@
       align-items: center;
       gap: 0.5rem;
       transition: background-color 0.2s;
+      font-size: 1rem;
 
       &:hover {
-        background-color: #0056b3;
+        opacity: 0.9;
       }
 
-      i {
-        font-size: 1rem;
+      &.btn-primary {
+        background-color: #007bff;
+        color: white;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: #6c757d;
+        color: white;
+
+        &:hover {
+          background-color: #5a6268;
+        }
       }
     }
   }
@@ -42,7 +60,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 
-    .table {
+    table {
       width: 100%;
       border-collapse: collapse;
 
@@ -56,6 +74,10 @@
         background-color: #f8f9fa;
         font-weight: 600;
         color: #495057;
+      }
+
+      tr:hover {
+        background-color: #f8f9fa;
       }
 
       .actions {
@@ -96,12 +118,6 @@
           }
         }
       }
-
-      .no-data {
-        text-align: center;
-        color: #6c757d;
-        padding: 2rem;
-      }
     }
   }
 
@@ -125,6 +141,52 @@
     p {
       color: #6c757d;
       margin: 0;
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+
+      &:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+      }
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      padding-right: 2rem;
     }
   }
 }

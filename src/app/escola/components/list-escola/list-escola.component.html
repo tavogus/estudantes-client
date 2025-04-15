@@ -1,9 +1,14 @@
 <div class="container">
     <div class="header">
         <h1>Escolas</h1>
-        <button class="btn btn-primary" (click)="novaEscola()">
-            <i class="fas fa-plus"></i> Nova Escola
-        </button>
+        <div class="actions">
+            <button class="btn btn-primary" (click)="novaEscola()">
+                <i class="fas fa-plus"></i> Nova Escola
+            </button>
+            <button class="btn btn-secondary" (click)="showFilterModal = true">
+                <i class="fas fa-filter"></i> Filtros
+            </button>
+        </div>
     </div>
 
     <div class="table-container" *ngIf="!loading; else loadingTemplate">
@@ -13,7 +18,7 @@
                     <th>Nome</th>
                     <th>Endereço</th>
                     <th>Telefone</th>
-                    <th>Ações</th>
+                    <th class="actions">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,4 +51,16 @@
             <p>Carregando escolas...</p>
         </div>
     </ng-template>
+
+    <app-filter-modal
+        [isOpen]="showFilterModal"
+        [title]="'Filtros de Escolas'"
+        [filters]="filters"
+        (close)="onFilterClose()"
+        (apply)="onFilterApply($event)">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" [(ngModel)]="filters.nome" name="nome" placeholder="Digite o nome da escola">
+        </div>
+    </app-filter-modal>
 </div>

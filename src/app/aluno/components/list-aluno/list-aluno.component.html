@@ -1,26 +1,35 @@
 <div class="container">
     <div class="header">
         <h1>Alunos da Escola</h1>
-        <button class="btn btn-primary" (click)="novoAluno()">
-            <i class="fas fa-plus"></i> Novo Aluno
-        </button>
+        <div class="actions">
+            <button class="btn btn-primary" (click)="novoAluno()">
+                <i class="fas fa-plus"></i> Novo Aluno
+            </button>
+            <button class="btn btn-secondary" (click)="showFilterModal = true">
+                <i class="fas fa-filter"></i> Filtros
+            </button>
+        </div>
     </div>
 
     <div class="table-container" *ngIf="!loading; else loadingTemplate">
-        <table class="table">
+        <table>
             <thead>
                 <tr>
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>Data de Nascimento</th>
-                    <th>Ações</th>
+                    <th>Tipo de Benefício</th>
+                    <th>Alerta</th>
+                    <th class="actions">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let aluno of alunos">
-                    <td>{{aluno.nome}}</td>
-                    <td>{{aluno.cpf}}</td>
-                    <td>{{aluno.dataNascimento | date:'dd/MM/yyyy'}}</td>
+                    <td>{{ aluno.nome }}</td>
+                    <td>{{ aluno.cpf }}</td>
+                    <td>{{ aluno.dataNascimento | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ aluno.tipoBeneficio }}</td>
+                    <td>{{ aluno.alerta ? 'Sim' : 'Não' }}</td>
                     <td class="actions">
                         <button class="btn btn-edit" (click)="editarAluno(aluno.id)">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -31,7 +40,7 @@
                     </td>
                 </tr>
                 <tr *ngIf="alunos.length === 0">
-                    <td colspan="4" class="no-data">Nenhum aluno encontrado.</td>
+                    <td colspan="6" class="no-data">Nenhum aluno encontrado.</td>
                 </tr>
             </tbody>
         </table>
@@ -43,4 +52,29 @@
             <p>Carregando alunos...</p>
         </div>
     </ng-template>
+
+    <app-filter-modal
+        [isOpen]="showFilterModal"
+        [title]="'Filtros de Alunos'"
+        [filters]="filters"
+        (close)="onFilterClose()"
+        (apply)="onFilterApply($event)">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" [(ngModel)]="filters.nome" name="nome">
+        </div>
+        <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" [(ngModel)]="filters.cpf" name="cpf">
+        </div>
+        <div class="form-group">
+            <label for="tipoBeneficio">Tipo de Benefício</label>
+            <select id="tipoBeneficio" [(ngModel)]="filters.tipoBeneficio" name="tipoBeneficio">
+                <option value="">Todos</option>
+                <option *ngFor="let tipo of ['BOLSA_FAMILIA', 'AUXILIO_BRASIL']" [value]="tipo">
+                    {{ tipo }}
+                </option>
+            </select>
+        </div>
+    </app-filter-modal>
 </div> 

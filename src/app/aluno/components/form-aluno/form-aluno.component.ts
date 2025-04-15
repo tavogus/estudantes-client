@@ -64,14 +64,11 @@ export class FormAlunoComponent implements OnInit {
     if (id) {
       this.isEditMode = true;
       this.alunoId = Number(id);
-      this.alunoService.getById(this.alunoId).subscribe({
-        next: (aluno) => {
-          this.alunoForm.patchValue({
-            ...aluno,
-            escola: this.escolas.find(e => e.id === aluno.escolaId)
-          });
+      this.alunoService.buscarPorId(this.alunoId).subscribe({
+        next: (aluno: AlunoDTO) => {
+          this.alunoForm.patchValue(aluno);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao carregar aluno:', error);
           this.showNotificationMessage('Erro ao carregar aluno', 'error');
         }
@@ -109,23 +106,23 @@ export class FormAlunoComponent implements OnInit {
       console.log(alunoData);
 
       if (this.isEditMode && this.alunoId) {
-        this.alunoService.update(this.alunoId, aluno).subscribe({
+        this.alunoService.atualizar(this.alunoId, aluno).subscribe({
           next: () => {
             this.showNotificationMessage('Aluno atualizado com sucesso!', 'success');
             setTimeout(() => this.router.navigate(['/alunos']), 2000);
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Erro ao atualizar aluno:', error);
             this.showNotificationMessage('Erro ao atualizar aluno', 'error');
           }
         });
       } else {
-        this.alunoService.create(aluno).subscribe({
+        this.alunoService.criar(aluno).subscribe({
           next: () => {
             this.showNotificationMessage('Aluno criado com sucesso!', 'success');
             setTimeout(() => this.router.navigate(['/alunos']), 2000);
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Erro ao criar aluno:', error);
             this.showNotificationMessage('Erro ao criar aluno', 'error');
           }
