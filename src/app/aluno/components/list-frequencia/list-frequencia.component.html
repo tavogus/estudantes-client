@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="header">
+        <h1>Frequências do Aluno</h1>
+        <div class="actions">
+            <button class="btn btn-primary" (click)="novaFrequencia()">
+                <i class="fas fa-plus"></i> Nova Frequência
+            </button>
+            <button class="btn btn-secondary" (click)="voltar()">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </div>
+
+    <div class="table-container" *ngIf="!loading; else loadingTemplate">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Presença</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let frequencia of frequencias">
+                    <td>{{ frequencia.data | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ frequencia.presente ? 'Presente' : 'Faltou' }}</td>
+                    <td>{{ frequencia.observacao || '-' }}</td>
+                </tr>
+                <tr *ngIf="frequencias.length === 0">
+                    <td colspan="3" class="no-data">Nenhuma frequência registrada.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ng-template #loadingTemplate>
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Carregando frequências...</p>
+        </div>
+    </ng-template>
+</div> 
