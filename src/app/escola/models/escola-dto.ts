@@ -1,14 +1,17 @@
-export class EscolaDTO {
-    id: number;
-    nome: string;
-    endereco: string;
-    telefone: string;
+/**
+ * Interface que representa uma escola no sistema
+ */
+export interface EscolaDTO {
+  /** Identificador único da escola */
+  id: number;
   
-    constructor(nome: string, endereco: string, telefone: string, id: number) {
-      this.nome = nome;
-      this.endereco = endereco;
-      this.telefone = telefone;
-      this.id = id;
-    }
-  }
+  /** Nome da escola */
+  nome: string;
+  
+  /** Endereço completo da escola */
+  endereco: string;
+  
+  /** Número de telefone para contato */
+  telefone: string;
+}
   

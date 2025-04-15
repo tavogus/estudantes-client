@@ -1,5 +1,25 @@
 import { TipoBeneficio } from "./tipo-beneficio";
 
+/**
+ * Interface que representa um aluno no sistema
+ */
+export interface AlunoDTO {
+  /** Identificador único do aluno */
+  id: number;
+  
+  /** Nome completo do aluno */
+  nome: string;
+  
+  /** Data de nascimento do aluno */
+  dataNascimento: Date;
+  
+  /** Identificador da escola do aluno */
+  escolaId: number;
+  
+  /** Nome da escola do aluno */
+  escolaNome?: string;
+}
+
 export class AlunoDTO {
     id: number;
     nome: string;

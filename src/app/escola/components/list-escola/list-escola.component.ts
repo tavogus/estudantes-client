@@ -14,6 +14,10 @@ import Swal from 'sweetalert2';
 export class ListEscolaComponent implements OnInit {
   escolas: EscolaDTO[] = [];
   loading: boolean = true;
+  showFilterModal: boolean = false;
+  filters = {
+    nome: ''
+  };
 
   constructor(
     private escolaService: EscolaService,
@@ -26,7 +30,7 @@ export class ListEscolaComponent implements OnInit {
 
   carregarEscolas(): void {
     this.loading = true;
-    this.escolaService.listar().subscribe({
+    this.escolaService.listar(this.filters).subscribe({
       next: (escolas) => {
         this.escolas = escolas;
         this.loading = false;
@@ -42,6 +46,16 @@ export class ListEscolaComponent implements OnInit {
     });
   }
 
+  onFilterClose(): void {
+    this.showFilterModal = false;
+  }
+
+  onFilterApply(filters: any): void {
+    this.filters = filters;
+    this.showFilterModal = false;
+    this.carregarEscolas();
+  }
+
   novaEscola(): void {
     this.router.navigate(['/escolas/nova']);
   }
@@ -53,16 +67,20 @@ export class ListEscolaComponent implements OnInit {
   }
 
   confirmarExclusao(id: number): void {
-    if (confirm('Tem certeza que deseja excluir esta escola?')) {
-      this.escolaService.excluir(id).subscribe({
-        next: () => {
-          this.carregarEscolas();
-        },
-        error: (error: any) => {
-          console.error('Erro ao excluir escola:', error);
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: "Esta ação não poderá ser revertida!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.excluirEscola(id);
+      }
+    });
   }
 
   excluirEscola(id: number | undefined): void {
@@ -88,6 +106,6 @@ export class ListEscolaComponent implements OnInit {
   }
 
   listarAlunos(escolaId: number): void {
-    this.router.navigate(['/alunos', escolaId]);
+    this.router.navigate(['/alunos/escola', escolaId]);
   }
 }
