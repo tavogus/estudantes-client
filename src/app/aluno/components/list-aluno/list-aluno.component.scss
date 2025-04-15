@@ -108,6 +108,15 @@
             }
           }
 
+          &.btn-attendance {
+            background-color: #28a745;
+            color: white;
+
+            &:hover {
+              background-color: #218838;
+            }
+          }
+
           &.btn-delete {
             background-color: #dc3545;
             color: white;

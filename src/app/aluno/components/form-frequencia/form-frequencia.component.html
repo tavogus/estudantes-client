@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="header">
+        <h1>Registrar Frequência</h1>
+    </div>
+
+    <form (ngSubmit)="salvar()" *ngIf="!loading; else loadingTemplate">
+        <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" [(ngModel)]="frequencia.data" name="data" required>
+        </div>
+
+        <div class="form-group">
+            <label for="presente">Presença</label>
+            <select id="presente" [(ngModel)]="frequencia.presente" name="presente" required>
+                <option [ngValue]="true">Presente</option>
+                <option [ngValue]="false">Faltou</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="observacao">Observação</label>
+            <textarea id="observacao" [(ngModel)]="frequencia.observacao" name="observacao" rows="3" maxlength="500"></textarea>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+    </form>
+
+    <ng-template #loadingTemplate>
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Salvando frequência...</p>
+        </div>
+    </ng-template>
+</div> 

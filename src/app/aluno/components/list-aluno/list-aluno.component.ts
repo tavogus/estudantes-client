@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FilterModalComponent } from '../../../shared/components/filter-modal/filter-modal.component';
 import { FormsModule } from '@angular/forms';
 import { NgxSelectModule } from 'ngx-select-ex';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-aluno',
@@ -52,7 +53,11 @@ export class ListAlunoComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Erro ao carregar alunos:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Erro ao carregar alunos'
+        });
         this.loading = false;
       }
     });
@@ -66,14 +71,48 @@ export class ListAlunoComponent implements OnInit {
     this.router.navigate(['/alunos/editar', id]);
   }
 
+  registrarFrequencia(id: number | undefined): void {
+    if (id) {
+      this.router.navigate(['/alunos/frequencias', id], {
+        queryParams: { escolaId: this.escolaId }
+      });
+    }
+  }
+
   confirmarExclusao(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este aluno?')) {
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: "Esta ação não poderá ser revertida!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.excluirAluno(id);
+      }
+    });
+  }
+
+  excluirAluno(id: number | undefined): void {
+    if (id) {
       this.alunoService.excluir(id).subscribe({
         next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sucesso',
+            text: 'Aluno excluído com sucesso'
+          });
           this.carregarAlunos();
         },
-        error: (error: any) => {
-          console.error('Erro ao excluir aluno:', error);
+        error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao excluir aluno'
+          });
         }
       });
     }
@@ -81,8 +120,8 @@ export class ListAlunoComponent implements OnInit {
 
   onFilterApply(filters: any): void {
     this.filters = filters;
-    this.carregarAlunos();
     this.showFilterModal = false;
+    this.carregarAlunos();
   }
 
   onFilterClose(): void {
