@@ -23,7 +23,7 @@ export class SidebarComponent {
       title: 'Frequências',
       icon: 'fas fa-clipboard-check',
       subItems: [
-        { title: 'Listar Frequências', path: '/frequencias/aluno/0', icon: 'fas fa-list' }
+        { title: 'Listar Frequências', path: '/frequencias', icon: 'fas fa-list' }
       ]
     }
   ];

@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { FrequenciaDTO } from '../models/frequencia-dto';
 import { environment } from '../../../environments/environment';
+import { AlunoDTO } from '../models/frequencia-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -30,18 +31,32 @@ export class FrequenciaService {
     console.log(`FrequenciaService: ${message}`);
   }
 
-  buscarFrequenciasPorPeriodo(alunoId: number, dataInicio: string, dataFim: string): Observable<FrequenciaDTO[]> {
-    this.log(`Buscando frequências do aluno ${alunoId} no período ${dataInicio} a ${dataFim}`);
-    return this.http.get<FrequenciaDTO[]>(`${this.apiUrl}/aluno/${alunoId}/periodo`, {
-      params: {
-        dataInicio,
-        dataFim
-      }
-    })
+  buscarFrequenciasPorPeriodo(alunoId: number | null, dataInicio: string, dataFim: string): Observable<FrequenciaDTO[]> {
+    this.log(`Buscando frequências do período ${dataInicio} a ${dataFim}`);
+    const params: any = {
+      dataInicio,
+      dataFim
+    };
+    
+    if (alunoId) {
+      params.alunoId = alunoId;
+    }
+
+    return this.http.get<FrequenciaDTO[]>(`${this.apiUrl}/aluno/periodo`, { params })
     .pipe(
       tap(() => this.log('Frequências obtidas com sucesso')),
       retry(3),
       catchError(this.handleError)
     );
+  }
+
+  listarAlunos(): Observable<AlunoDTO[]> {
+    this.log('Buscando lista de alunos');
+    return this.http.get<AlunoDTO[]>(`${environment.apiUrl}/alunos`)
+      .pipe(
+        tap(() => this.log('Lista de alunos obtida com sucesso')),
+        retry(3),
+        catchError(this.handleError)
+      );
   }
 } 

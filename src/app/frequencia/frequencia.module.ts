@@ -7,7 +7,7 @@ import { FrequenciaService } from './service/frequencia.service';
 import { ListFrequenciaPeriodoComponent } from './components/list-frequencia-periodo/list-frequencia-periodo.component';
 
 const routes: Routes = [
-  { path: 'aluno/:id', component: ListFrequenciaPeriodoComponent }
+  { path: '', component: ListFrequenciaPeriodoComponent }
 ];
 
 @NgModule({
