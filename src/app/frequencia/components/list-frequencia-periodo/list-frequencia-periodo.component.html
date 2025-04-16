@@ -3,6 +3,15 @@
         <h1>Frequências por Período</h1>
         <div class="filters">
             <div class="form-group">
+                <label for="aluno">Aluno</label>
+                <select id="aluno" [(ngModel)]="alunoSelecionado" (change)="onAlunoChange()">
+                    <option [ngValue]="null">Todos os Alunos</option>
+                    <option *ngFor="let aluno of alunos" [ngValue]="aluno.id">
+                        {{ aluno.nome }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="dataInicio">Data Início</label>
                 <input type="date" id="dataInicio" [(ngModel)]="dataInicio" (change)="onPeriodoChange()">
             </div>
@@ -17,7 +26,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Aluno</th>
                     <th>Data</th>
                     <th>Presença</th>
                     <th>Observação</th>
@@ -25,13 +33,12 @@
             </thead>
             <tbody>
                 <tr *ngFor="let frequencia of frequencias">
-                    <td>{{ frequencia.aluno?.nome }}</td>
                     <td>{{ frequencia.data | date:'dd/MM/yyyy' }}</td>
                     <td>{{ frequencia.presente ? 'Presente' : 'Faltou' }}</td>
                     <td>{{ frequencia.observacao || '-' }}</td>
                 </tr>
                 <tr *ngIf="frequencias.length === 0">
-                    <td colspan="4" class="no-data">Nenhuma frequência encontrada para o período selecionado.</td>
+                    <td colspan="3" class="no-data">Nenhuma frequência encontrada para o período selecionado.</td>
                 </tr>
             </tbody>
         </table>
