@@ -18,6 +18,13 @@ export class SidebarComponent {
         { title: 'Escola', path: '/escolas', icon: 'fas fa-school' },
         { title: 'Novo Aluno', path: '/alunos/novo', icon: 'fas fa-user-plus' }
       ]
+    },
+    {
+      title: 'Frequências',
+      icon: 'fas fa-clipboard-check',
+      subItems: [
+        { title: 'Listar Frequências', path: '/frequencias/aluno/0', icon: 'fas fa-list' }
+      ]
     }
   ];
 
