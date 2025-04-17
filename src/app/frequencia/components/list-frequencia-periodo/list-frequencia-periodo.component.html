@@ -1,24 +1,10 @@
 <div class="container">
     <div class="header">
         <h1>Frequências por Período</h1>
-        <div class="filters">
-            <div class="form-group">
-                <label for="aluno">Aluno</label>
-                <select id="aluno" [(ngModel)]="alunoSelecionado" (change)="onAlunoChange()">
-                    <option [ngValue]="null">Todos os Alunos</option>
-                    <option *ngFor="let aluno of alunos" [ngValue]="aluno.id">
-                        {{ aluno.nome }}
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="dataInicio">Data Início</label>
-                <input type="date" id="dataInicio" [(ngModel)]="dataInicio" (change)="onPeriodoChange()">
-            </div>
-            <div class="form-group">
-                <label for="dataFim">Data Fim</label>
-                <input type="date" id="dataFim" [(ngModel)]="dataFim" (change)="onPeriodoChange()">
-            </div>
+        <div class="actions">
+            <button class="btn btn-secondary" (click)="showFilterModal = true">
+                <i class="fas fa-filter"></i> Filtros
+            </button>
         </div>
     </div>
 
@@ -50,4 +36,29 @@
             <p>Carregando frequências...</p>
         </div>
     </ng-template>
+
+    <app-filter-modal
+        [isOpen]="showFilterModal"
+        [title]="'Filtros de Frequência'"
+        [filters]="filters"
+        (close)="onFilterClose()"
+        (apply)="onFilterApply($event)">
+        <div class="form-group">
+            <label for="aluno">Aluno</label>
+            <select id="aluno" [(ngModel)]="filters.alunoId" name="alunoId">
+                <option [ngValue]="null">Todos os Alunos</option>
+                <option *ngFor="let aluno of alunos" [ngValue]="aluno.id">
+                    {{ aluno.nome }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="dataInicio">Data Início</label>
+            <input type="date" id="dataInicio" [(ngModel)]="filters.dataInicio" name="dataInicio">
+        </div>
+        <div class="form-group">
+            <label for="dataFim">Data Fim</label>
+            <input type="date" id="dataFim" [(ngModel)]="filters.dataFim" name="dataFim">
+        </div>
+    </app-filter-modal>
 </div> 

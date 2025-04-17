@@ -14,30 +14,31 @@
             color: #333;
         }
 
-        .filters {
+        .actions {
             display: flex;
             gap: 1rem;
 
-            .form-group {
+            .btn {
                 display: flex;
-                flex-direction: column;
+                align-items: center;
                 gap: 0.5rem;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
 
-                label {
-                    color: #495057;
-                    font-weight: 500;
+                i {
+                    font-size: 1rem;
                 }
 
-                input {
-                    padding: 0.5rem;
-                    border: 1px solid #ced4da;
-                    border-radius: 4px;
-                    font-size: 1rem;
+                &.btn-secondary {
+                    background-color: #6c757d;
+                    color: white;
+                    border: none;
 
-                    &:focus {
-                        outline: none;
-                        border-color: #80bdff;
-                        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                    &:hover {
+                        background-color: #5a6268;
                     }
                 }
             }
@@ -99,6 +100,117 @@
         text-align: center;
         color: #6c757d;
         padding: 2rem;
+    }
+
+    ::ng-deep {
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+
+            .modal-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 500px;
+                max-width: 90%;
+                max-height: 90vh;
+                overflow-y: auto;
+
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+
+                    h2 {
+                        margin: 0;
+                        color: #333;
+                    }
+
+                    .close-button {
+                        background: none;
+                        border: none;
+                        font-size: 24px;
+                        cursor: pointer;
+                        color: #6c757d;
+
+                        &:hover {
+                            color: #333;
+                        }
+                    }
+                }
+
+                .modal-body {
+                    margin-bottom: 20px;
+
+                    .form-group {
+                        margin-bottom: 15px;
+
+                        label {
+                            display: block;
+                            margin-bottom: 5px;
+                            color: #495057;
+                            font-weight: 500;
+                        }
+
+                        input, select {
+                            width: 100%;
+                            padding: 8px;
+                            border: 1px solid #ced4da;
+                            border-radius: 4px;
+                            font-size: 1rem;
+
+                            &:focus {
+                                outline: none;
+                                border-color: #80bdff;
+                                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                            }
+                        }
+                    }
+                }
+
+                .modal-footer {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+
+                    .btn {
+                        padding: 8px 16px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        border: none;
+                        font-size: 1rem;
+                        transition: all 0.3s ease;
+
+                        &.btn-primary {
+                            background-color: #007bff;
+                            color: white;
+
+                            &:hover {
+                                background-color: #0069d9;
+                            }
+                        }
+
+                        &.btn-secondary {
+                            background-color: #6c757d;
+                            color: white;
+
+                            &:hover {
+                                background-color: #5a6268;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
