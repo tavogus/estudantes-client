@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FrequenciaService } from '../../service/frequencia.service';
 import { FrequenciaDTO, AlunoDTO } from '../../models/frequencia-dto';
+import { FilterModalComponent } from '../../../shared/components/filter-modal/filter-modal.component';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -10,21 +11,24 @@ import Swal from 'sweetalert2';
   templateUrl: './list-frequencia-periodo.component.html',
   styleUrls: ['./list-frequencia-periodo.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, FilterModalComponent]
 })
 export class ListFrequenciaPeriodoComponent implements OnInit {
   frequencias: FrequenciaDTO[] = [];
   alunos: AlunoDTO[] = [];
   loading = true;
-  dataInicio: string;
-  dataFim: string;
-  alunoSelecionado: number | null = null;
+  showFilterModal = false;
+  filters = {
+    alunoId: null as number | null,
+    dataInicio: '',
+    dataFim: ''
+  };
 
   constructor(private frequenciaService: FrequenciaService) {
     const hoje = new Date();
     const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-    this.dataInicio = primeiroDiaMes.toISOString().split('T')[0];
-    this.dataFim = hoje.toISOString().split('T')[0];
+    this.filters.dataInicio = primeiroDiaMes.toISOString().split('T')[0];
+    this.filters.dataFim = hoje.toISOString().split('T')[0];
   }
 
   ngOnInit(): void {
@@ -49,7 +53,11 @@ export class ListFrequenciaPeriodoComponent implements OnInit {
 
   carregarFrequencias(): void {
     this.loading = true;
-    this.frequenciaService.buscarFrequenciasPorPeriodo(this.alunoSelecionado, this.dataInicio, this.dataFim).subscribe({
+    this.frequenciaService.buscarFrequenciasPorPeriodo(
+      this.filters.alunoId,
+      this.filters.dataInicio,
+      this.filters.dataFim
+    ).subscribe({
       next: (frequencias: FrequenciaDTO[]) => {
         this.frequencias = frequencias;
         this.loading = false;
@@ -65,11 +73,13 @@ export class ListFrequenciaPeriodoComponent implements OnInit {
     });
   }
 
-  onPeriodoChange(): void {
+  onFilterApply(filters: any): void {
+    this.filters = filters;
+    this.showFilterModal = false;
     this.carregarFrequencias();
   }
 
-  onAlunoChange(): void {
-    this.carregarFrequencias();
+  onFilterClose(): void {
+    this.showFilterModal = false;
   }
 } 
