@@ -1,138 +1,163 @@
-<div class="container">
-    <div class="header">
-        <div class="header-content">
-            <h1>{{ isEditMode ? 'Editar Aluno' : 'Novo Aluno' }}</h1>
-            <button class="btn btn-secondary" (click)="router.navigate(['/escolas'])">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </button>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ isEditMode ? 'Editar Aluno' : 'Novo Aluno' }}</h3>
         </div>
-    </div>
-
-    <div class="notification" *ngIf="showNotification" [class.success]="notificationType === 'success'" [class.error]="notificationType === 'error'">
-        {{ notificationMessage }}
-    </div>
-
-    <form [formGroup]="alunoForm" (ngSubmit)="onSubmit()" class="form">
-        <div class="form-grid">
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+            <!-- Nome -->
             <div class="form-group">
-                <label for="nome">Nome Completo</label>
-                <input 
-                    type="text" 
-                    id="nome" 
-                    formControlName="nome"
-                    placeholder="Digite o nome completo do aluno"
-                    [class.is-invalid]="alunoForm.get('nome')?.invalid && alunoForm.get('nome')?.touched"
-                >
-                <div class="invalid-feedback" *ngIf="alunoForm.get('nome')?.invalid && alunoForm.get('nome')?.touched">
-                    <span *ngIf="alunoForm.get('nome')?.errors?.['required']">Nome é obrigatório</span>
-                    <span *ngIf="alunoForm.get('nome')?.errors?.['minlength']">Nome deve ter pelo menos 3 caracteres</span>
-                </div>
+              <label for="nome">Nome</label>
+              <input
+                type="text"
+                id="nome"
+                formControlName="nome"
+                class="form-control"
+                [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched"
+              />
+              <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+                <span *ngIf="form.get('nome')?.errors?.['required']">Nome é obrigatório</span>
+                <span *ngIf="form.get('nome')?.errors?.['minlength']">Nome deve ter pelo menos 3 caracteres</span>
+              </div>
             </div>
 
+            <!-- CPF -->
             <div class="form-group">
-                <label for="cpf">CPF</label>
-                <input 
-                    type="text" 
-                    id="cpf" 
-                    formControlName="cpf"
-                    placeholder="Digite o CPF do aluno"
-                    [class.is-invalid]="alunoForm.get('cpf')?.invalid && alunoForm.get('cpf')?.touched"
-                >
-                <div class="invalid-feedback" *ngIf="alunoForm.get('cpf')?.invalid && alunoForm.get('cpf')?.touched">
-                    <span *ngIf="alunoForm.get('cpf')?.errors?.['required']">CPF é obrigatório</span>
-                    <span *ngIf="alunoForm.get('cpf')?.errors?.['pattern']">CPF deve conter 11 dígitos</span>
-                </div>
+              <label for="cpf">CPF</label>
+              <input
+                type="text"
+                id="cpf"
+                formControlName="cpf"
+                class="form-control"
+                [class.is-invalid]="form.get('cpf')?.invalid && form.get('cpf')?.touched"
+              />
+              <div class="invalid-feedback" *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">
+                <span *ngIf="form.get('cpf')?.errors?.['required']">CPF é obrigatório</span>
+              </div>
             </div>
 
+            <!-- Data de Nascimento -->
             <div class="form-group">
-                <label for="dataNascimento">Data de Nascimento</label>
-                <input 
-                    type="date" 
-                    id="dataNascimento" 
-                    formControlName="dataNascimento"
-                    [class.is-invalid]="alunoForm.get('dataNascimento')?.invalid && alunoForm.get('dataNascimento')?.touched"
-                >
-                <div class="invalid-feedback" *ngIf="alunoForm.get('dataNascimento')?.invalid && alunoForm.get('dataNascimento')?.touched">
-                    Data de nascimento é obrigatória
-                </div>
+              <label for="dataNascimento">Data de Nascimento</label>
+              <input
+                type="date"
+                id="dataNascimento"
+                formControlName="dataNascimento"
+                class="form-control"
+                [class.is-invalid]="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched"
+              />
+              <div class="invalid-feedback" *ngIf="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched">
+                <span *ngIf="form.get('dataNascimento')?.errors?.['required']">Data de nascimento é obrigatória</span>
+              </div>
             </div>
 
+            <!-- Telefone -->
             <div class="form-group">
-                <label for="telefone">Telefone</label>
-                <input 
-                    type="text" 
-                    id="telefone" 
-                    formControlName="telefone"
-                    placeholder="Digite o telefone do aluno"
-                    [class.is-invalid]="alunoForm.get('telefone')?.invalid && alunoForm.get('telefone')?.touched"
-                >
-                <div class="invalid-feedback" *ngIf="alunoForm.get('telefone')?.invalid && alunoForm.get('telefone')?.touched">
-                    Telefone é obrigatório
-                </div>
+              <label for="telefone">Telefone</label>
+              <input
+                type="text"
+                id="telefone"
+                formControlName="telefone"
+                class="form-control"
+                [class.is-invalid]="form.get('telefone')?.invalid && form.get('telefone')?.touched"
+              />
+              <div class="invalid-feedback" *ngIf="form.get('telefone')?.invalid && form.get('telefone')?.touched">
+                <span *ngIf="form.get('telefone')?.errors?.['required']">Telefone é obrigatório</span>
+              </div>
             </div>
 
-            <div class="form-group full-width">
-                <label for="endereco">Endereço</label>
-                <input 
-                    type="text" 
-                    id="endereco" 
-                    formControlName="endereco"
-                    placeholder="Digite o endereço completo do aluno"
-                    [class.is-invalid]="alunoForm.get('endereco')?.invalid && alunoForm.get('endereco')?.touched"
-                >
-                <div class="invalid-feedback" *ngIf="alunoForm.get('endereco')?.invalid && alunoForm.get('endereco')?.touched">
-                    Endereço é obrigatório
-                </div>
-            </div>
-
+            <!-- Endereço -->
             <div class="form-group">
-                <label for="tipoBeneficio">Tipo de Benefício</label>
-                <select 
-                    id="tipoBeneficio" 
-                    formControlName="tipoBeneficio"
-                    [class.is-invalid]="alunoForm.get('tipoBeneficio')?.invalid && alunoForm.get('tipoBeneficio')?.touched"
-                >
-                    <option value="">Selecione o tipo de benefício...</option>
-                    <option *ngFor="let tipo of tiposBeneficio" [value]="tipo">{{ tipo }}</option>
-                </select>
-                <div class="invalid-feedback" *ngIf="alunoForm.get('tipoBeneficio')?.invalid && alunoForm.get('tipoBeneficio')?.touched">
-                    Tipo de benefício é obrigatório
-                </div>
+              <label for="endereco">Endereço</label>
+              <input
+                type="text"
+                id="endereco"
+                formControlName="endereco"
+                class="form-control"
+                [class.is-invalid]="form.get('endereco')?.invalid && form.get('endereco')?.touched"
+              />
+              <div class="invalid-feedback" *ngIf="form.get('endereco')?.invalid && form.get('endereco')?.touched">
+                <span *ngIf="form.get('endereco')?.errors?.['required']">Endereço é obrigatório</span>
+              </div>
             </div>
 
+            <!-- Tipo de Benefício -->
             <div class="form-group">
-                <label for="escola">Escola</label>
-                <ngx-select
-                    id="escola"
-                    [items]="escolas"
-                    formControlName="escola"
-                    [class.is-invalid]="alunoForm.get('escola')?.invalid && alunoForm.get('escola')?.touched"
-                    optionTextField="nome"
-                    optionValueField="id"
-                    placeholder="Selecione uma escola...">
-                </ngx-select>
-                <div class="invalid-feedback" *ngIf="alunoForm.get('escola')?.invalid && alunoForm.get('escola')?.touched">
-                    Escola é obrigatória
-                </div>
+              <label for="tipoBeneficio">Tipo de Benefício</label>
+              <select
+                id="tipoBeneficio"
+                formControlName="tipoBeneficio"
+                class="form-control"
+                [class.is-invalid]="form.get('tipoBeneficio')?.invalid && form.get('tipoBeneficio')?.touched"
+              >
+                <option value="">Selecione...</option>
+                <option *ngFor="let tipo of tiposBeneficio" [value]="tipo">
+                  {{ tipo }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="form.get('tipoBeneficio')?.invalid && form.get('tipoBeneficio')?.touched">
+                <span *ngIf="form.get('tipoBeneficio')?.errors?.['required']">Tipo de benefício é obrigatório</span>
+              </div>
             </div>
 
+            <!-- Escola -->
             <div class="form-group">
-                <div class="form-check">
-                    <input 
-                        type="checkbox" 
-                        id="alerta" 
-                        formControlName="alerta"
-                        class="form-check-input"
-                    >
-                    <label class="form-check-label" for="alerta">Alerta</label>
-                </div>
+              <label for="escolaId">Escola</label>
+              <select
+                id="escolaId"
+                formControlName="escolaId"
+                class="form-control"
+                [class.is-invalid]="form.get('escolaId')?.invalid && form.get('escolaId')?.touched"
+              >
+                <option value="">Selecione...</option>
+                <option *ngFor="let escola of escolas" [value]="escola.id">
+                  {{ escola.nome }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="form.get('escolaId')?.invalid && form.get('escolaId')?.touched">
+                <span *ngIf="form.get('escolaId')?.errors?.['required']">Escola é obrigatória</span>
+              </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary" [disabled]="alunoForm.invalid">
+            <!-- Alerta -->
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="alerta"
+                  formControlName="alerta"
+                  class="custom-control-input"
+                />
+                <label class="custom-control-label" for="alerta">Alerta</label>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="form-group text-right">
+              <button 
+                type="button" 
+                class="btn btn-secondary mr-2 tooltip" 
+                (click)="router.navigate(['/alunos'])"
+                data-tooltip="Cancelar e voltar para a lista de alunos"
+              >
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary tooltip" 
+                [disabled]="form.invalid"
+                [attr.data-tooltip]="form.invalid ? 'Preencha todos os campos obrigatórios' : (isEditMode ? 'Salvar alterações do aluno' : 'Criar novo aluno')"
+              >
+                <i class="fas" [class.fa-save]="isEditMode" [class.fa-plus]="!isEditMode"></i>
                 {{ isEditMode ? 'Atualizar' : 'Salvar' }}
-            </button>
+              </button>
+            </div>
+          </form>
         </div>
-    </form>
+      </div>
+    </div>
+  </div>
 </div> 

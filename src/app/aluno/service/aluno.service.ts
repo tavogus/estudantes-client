@@ -10,7 +10,8 @@ import { CacheService } from '../../shared/services/cache.service';
   providedIn: 'root'
 })
 export class AlunoService {
-  private apiUrl = `${environment.apiUrl}/alunos`;
+  private readonly API_URL = `${environment.apiUrl}/alunos`;
+  private readonly CACHE_KEY = 'alunos';
 
   constructor(
     private http: HttpClient,
@@ -41,20 +42,16 @@ export class AlunoService {
   }
 
   listar(): Observable<AlunoDTO[]> {
-    const cacheKey = this.getCacheKey('listar');
-    const cachedData = this.cacheService.get<AlunoDTO[]>(cacheKey);
-    
-    if (cachedData) {
-      this.log('Retornando dados do cache');
-      return cachedData;
+    if (this.cacheService.has(this.CACHE_KEY)) {
+      return this.cacheService.getArray<AlunoDTO>(this.CACHE_KEY);
     }
 
     this.log('Buscando lista de alunos');
-    return this.http.get<AlunoDTO[]>(this.apiUrl)
+    return this.http.get<AlunoDTO[]>(this.API_URL)
       .pipe(
         tap(data => {
           this.log('Lista de alunos obtida com sucesso');
-          this.cacheService.set(cacheKey, data);
+          this.cacheService.set(this.CACHE_KEY, data);
         }),
         retry(3),
         catchError(this.handleError)
@@ -62,16 +59,15 @@ export class AlunoService {
   }
 
   buscarPorId(id: number): Observable<AlunoDTO> {
-    const cacheKey = this.getCacheKey('buscarPorId', { id });
-    const cachedData = this.cacheService.get<AlunoDTO>(cacheKey);
+    const cacheKey = `${this.CACHE_KEY}_${id}`;
     
-    if (cachedData) {
+    if (this.cacheService.has(cacheKey)) {
       this.log('Retornando dados do cache');
-      return cachedData;
+      return this.cacheService.getWithDefault<AlunoDTO>(cacheKey, {} as AlunoDTO);
     }
 
     this.log(`Buscando aluno com ID: ${id}`);
-    return this.http.get<AlunoDTO>(`${this.apiUrl}/${id}`)
+    return this.http.get<AlunoDTO>(`${this.API_URL}/${id}`)
       .pipe(
         tap(data => {
           this.log(`Aluno ${id} obtido com sucesso`);
@@ -84,11 +80,11 @@ export class AlunoService {
 
   criar(aluno: AlunoDTO): Observable<AlunoDTO> {
     this.log('Criando novo aluno');
-    return this.http.post<AlunoDTO>(this.apiUrl, aluno)
+    return this.http.post<AlunoDTO>(this.API_URL, aluno)
       .pipe(
-        tap(data => {
+        tap(() => {
           this.log('Aluno criado com sucesso');
-          this.cacheService.clear(); // Limpa o cache após criar um novo aluno
+          this.cacheService.remove(this.CACHE_KEY);
         }),
         catchError(this.handleError)
       );
@@ -96,11 +92,12 @@ export class AlunoService {
 
   atualizar(id: number, aluno: AlunoDTO): Observable<AlunoDTO> {
     this.log(`Atualizando aluno com ID: ${id}`);
-    return this.http.put<AlunoDTO>(`${this.apiUrl}/${id}`, aluno)
+    return this.http.put<AlunoDTO>(`${this.API_URL}/${id}`, aluno)
       .pipe(
-        tap(data => {
+        tap(() => {
           this.log(`Aluno ${id} atualizado com sucesso`);
-          this.cacheService.clear(); // Limpa o cache após atualizar
+          this.cacheService.remove(this.CACHE_KEY);
+          this.cacheService.remove(`${this.CACHE_KEY}_${id}`);
         }),
         catchError(this.handleError)
       );
@@ -108,27 +105,27 @@ export class AlunoService {
 
   excluir(id: number): Observable<void> {
     this.log(`Excluindo aluno com ID: ${id}`);
-    return this.http.delete<void>(`${this.apiUrl}/${id}`)
+    return this.http.delete<void>(`${this.API_URL}/${id}`)
       .pipe(
         tap(() => {
           this.log(`Aluno ${id} excluído com sucesso`);
-          this.cacheService.clear(); // Limpa o cache após excluir
+          this.cacheService.remove(this.CACHE_KEY);
+          this.cacheService.remove(`${this.CACHE_KEY}_${id}`);
         }),
         catchError(this.handleError)
       );
   }
 
   listarPorEscola(escolaId: number, filters: any = {}): Observable<AlunoDTO[]> {
-    const cacheKey = this.getCacheKey('listarPorEscola', { escolaId, ...filters });
-    const cachedData = this.cacheService.get<AlunoDTO[]>(cacheKey);
+    const cacheKey = `${this.CACHE_KEY}_escola_${escolaId}_${JSON.stringify(filters)}`;
     
-    if (cachedData) {
+    if (this.cacheService.has(cacheKey)) {
       this.log('Retornando dados do cache');
-      return cachedData;
+      return this.cacheService.getArray<AlunoDTO>(cacheKey);
     }
 
     this.log(`Buscando alunos da escola ${escolaId} com filtros`);
-    return this.http.get<AlunoDTO[]>(`${this.apiUrl}/escola/${escolaId}`, { params: filters })
+    return this.http.get<AlunoDTO[]>(`${this.API_URL}/escola/${escolaId}`, { params: filters })
       .pipe(
         tap(data => {
           this.log(`Alunos da escola ${escolaId} obtidos com sucesso`);
@@ -137,5 +134,23 @@ export class AlunoService {
         retry(3),
         catchError(this.handleError)
       );
+  }
+
+  buscarPorEscola(escolaId: number): Observable<AlunoDTO[]> {
+    const cacheKey = `${this.CACHE_KEY}_escola_${escolaId}`;
+    
+    if (this.cacheService.has(cacheKey)) {
+      return this.cacheService.getArray<AlunoDTO>(cacheKey);
+    }
+
+    this.log(`Buscando alunos da escola ${escolaId}`);
+    return this.http.get<AlunoDTO[]>(`${this.API_URL}/escola/${escolaId}`).pipe(
+      tap(data => {
+        this.log(`Alunos da escola ${escolaId} obtidos com sucesso`);
+        this.cacheService.set(cacheKey, data);
+      }),
+      retry(3),
+      catchError(this.handleError)
+    );
   }
 }

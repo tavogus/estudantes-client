@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AlunoService } from '../../service/aluno.service';
-import { AlunoDTO } from '../../models/aluno-dto';
+import { Aluno } from '../../models/aluno-dto';
 import { TipoBeneficio } from '../../models/tipo-beneficio';
 import { Router, RouterModule } from '@angular/router';
 import { EscolaService } from '../../../escola/service/escola.service';
@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { NgxSelectModule } from 'ngx-select-ex';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-form-aluno',
@@ -29,7 +30,7 @@ import { ActivatedRoute } from '@angular/router';
   ]
 })
 export class FormAlunoComponent implements OnInit {
-  alunoForm: FormGroup;
+  form: FormGroup;
   tiposBeneficio = Object.values(TipoBeneficio);
   isEditMode = false;
   alunoId: number | null = null;
@@ -39,20 +40,21 @@ export class FormAlunoComponent implements OnInit {
   notificationType: 'success' | 'error' = 'success';
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private alunoService: AlunoService,
     private escolaService: EscolaService,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private notificationService: NotificationService
   ) {
-    this.alunoForm = this.fb.group({
+    this.form = this.formBuilder.group({
       nome: ['', [Validators.required, Validators.minLength(3)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-      dataNascimento: ['', Validators.required],
-      endereco: ['', Validators.required],
-      telefone: ['', Validators.required],
-      tipoBeneficio: ['', Validators.required],
-      escola: ['', Validators.required],
+      cpf: ['', [Validators.required]],
+      dataNascimento: ['', [Validators.required]],
+      endereco: ['', [Validators.required]],
+      telefone: ['', [Validators.required]],
+      tipoBeneficio: ['', [Validators.required]],
+      escolaId: ['', [Validators.required]],
       alerta: [false]
     });
   }
@@ -60,19 +62,10 @@ export class FormAlunoComponent implements OnInit {
   ngOnInit(): void {
     this.carregarEscolas();
     
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    this.alunoId = this.route.snapshot.params['id'];
+    if (this.alunoId) {
       this.isEditMode = true;
-      this.alunoId = Number(id);
-      this.alunoService.buscarPorId(this.alunoId).subscribe({
-        next: (aluno: AlunoDTO) => {
-          this.alunoForm.patchValue(aluno);
-        },
-        error: (error: any) => {
-          console.error('Erro ao carregar aluno:', error);
-          this.showNotificationMessage('Erro ao carregar aluno', 'error');
-        }
-      });
+      this.carregarAluno();
     }
   }
 
@@ -88,46 +81,57 @@ export class FormAlunoComponent implements OnInit {
     });
   }
 
+  carregarAluno(): void {
+    this.alunoService.buscarPorId(this.alunoId!).subscribe({
+      next: (aluno) => {
+        this.form.patchValue(aluno);
+      },
+      error: (error) => {
+        this.notificationService.error('Erro', 'Não foi possível carregar os dados do aluno');
+        console.error('Erro ao carregar aluno:', error);
+      }
+    });
+  }
+
   onSubmit(): void {
-    if (this.alunoForm.valid) {
-      const alunoData = this.alunoForm.value;
-      const aluno = new AlunoDTO(
-        alunoData.nome,
-        alunoData.cpf,
-        new Date(alunoData.dataNascimento),
-        alunoData.endereco,
-        alunoData.telefone,
-        alunoData.tipoBeneficio,
-        alunoData.escola,
-        alunoData.alerta,
+    if (this.form.valid) {
+      const aluno = new Aluno(
+        this.form.value.nome,
+        this.form.value.cpf,
+        this.form.value.dataNascimento,
+        this.form.value.endereco,
+        this.form.value.telefone,
+        this.form.value.tipoBeneficio,
+        this.form.value.escolaId,
+        this.form.value.alerta,
         this.alunoId || 0
       );
 
-      console.log(alunoData);
+      const observable = this.alunoId
+        ? this.alunoService.atualizar(this.alunoId, aluno)
+        : this.alunoService.criar(aluno);
 
-      if (this.isEditMode && this.alunoId) {
-        this.alunoService.atualizar(this.alunoId, aluno).subscribe({
-          next: () => {
-            this.showNotificationMessage('Aluno atualizado com sucesso!', 'success');
-            setTimeout(() => this.router.navigate(['/alunos']), 2000);
-          },
-          error: (error: any) => {
-            console.error('Erro ao atualizar aluno:', error);
-            this.showNotificationMessage('Erro ao atualizar aluno', 'error');
-          }
-        });
-      } else {
-        this.alunoService.criar(aluno).subscribe({
-          next: () => {
-            this.showNotificationMessage('Aluno criado com sucesso!', 'success');
-            setTimeout(() => this.router.navigate(['/alunos']), 2000);
-          },
-          error: (error: any) => {
-            console.error('Erro ao criar aluno:', error);
-            this.showNotificationMessage('Erro ao criar aluno', 'error');
-          }
-        });
-      }
+      observable.subscribe({
+        next: () => {
+          this.notificationService.success(
+            'Sucesso',
+            `Aluno ${this.alunoId ? 'atualizado' : 'criado'} com sucesso!`
+          );
+          this.router.navigate(['/alunos']);
+        },
+        error: (error) => {
+          this.notificationService.error(
+            'Erro',
+            `Não foi possível ${this.alunoId ? 'atualizar' : 'criar'} o aluno`
+          );
+          console.error('Erro ao salvar aluno:', error);
+        }
+      });
+    } else {
+      this.notificationService.warning(
+        'Atenção',
+        'Por favor, preencha todos os campos obrigatórios corretamente'
+      );
     }
   }
 
